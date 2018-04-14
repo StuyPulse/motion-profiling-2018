@@ -158,24 +158,24 @@ public class DrivetrainMotionProfileCommand extends Command {
     	}
     }
     
-    public int addTrajectoryPoints(WPI_TalonSRX talon, double[][] points, int slot, int lastPointSent) {
-    	if (lastPointSent >= points.length){
-    		return lastPointSent; 
-    	}else if(lastPointSent < points.length){
+    public int addTrajectoryPoints(WPI_TalonSRX talon, double[][] points, int slot, int nextPointToSend) {
+    	if (nextPointToSend >= points.length){
+    		return nextPointToSend; 
+    	}else if(!talon.isMotionProfileTopLevelBufferFull() && nextPointToSend < points.length){
     		TrajectoryPoint point = new TrajectoryPoint();
     		//Must be in native units!!!!!!!!!!
-    		double position = points[lastPointSent][0];
-    		double velocity = points[lastPointSent][1];
+    		double position = points[nextPointToSend][0];
+    		double velocity = points[nextPointToSend][1];
     		point.position = position; 
     		point.velocity = velocity; 
-    		point.zeroPos = (lastPointSent==0) ? true:false; 
-    		point.isLastPoint = (lastPointSent==points.length-1) ? true:false; 
+    		point.zeroPos = (nextPointToSend==0) ? true:false; 
+    		point.isLastPoint = (nextPointToSend==points.length-1) ? true:false; 
     		point.profileSlotSelect0 = slot;
-    		point.timeDur = getTrajectoryDuration((int) points[lastPointSent][2]);
+    		point.timeDur = getTrajectoryDuration((int) points[nextPointToSend][2]);
     		talon.pushMotionProfileTrajectory(point);
-    		lastPointSent++;
+    		nextPointToSend++;
     	}
-    	return lastPointSent; 
+    	return nextPointToSend; 
     }
     
     public TrajectoryDuration getTrajectoryDuration(int durationMs) {	 
@@ -186,12 +186,12 @@ public class DrivetrainMotionProfileCommand extends Command {
 	}
     
     class ProcessBuffer implements java.lang.Runnable {
-    	int leftLastPointSent = 0; 
-    	int rightLastPointSent = 0;
+    	int leftNextPointToSend = 0; 
+    	int rightNextPointToSend = 0;
     	@Override
     	public void run() {
-    		addTrajectoryPoints(Robot.drivetrain.leftBottomMotor, leftPoints, profileSlot, leftLastPointSent);
-    		addTrajectoryPoints(Robot.drivetrain.rightBottomMotor, rightPoints, profileSlot, rightLastPointSent);
+    		leftNextPointToSend = addTrajectoryPoints(Robot.drivetrain.leftBottomMotor, leftPoints, profileSlot, leftNextPointToSend);
+    		rightNextPointToSend = addTrajectoryPoints(Robot.drivetrain.rightBottomMotor, rightPoints, profileSlot, rightNextPointToSend);
     		Robot.drivetrain.leftBottomMotor.processMotionProfileBuffer();
     		Robot.drivetrain.rightBottomMotor.processMotionProfileBuffer();
     	}
