@@ -164,14 +164,14 @@ public class DrivetrainMotionProfileCommand extends Command {
     	}else if(!talon.isMotionProfileTopLevelBufferFull() && nextPointToSend < points.length){
     		TrajectoryPoint point = new TrajectoryPoint();
     		//Must be in native units!!!!!!!!!!
-    		double position = points[nextPointToSend][0];
-    		double velocity = points[nextPointToSend][1];
+    		double position = points[nextPointToSend][3];
+    		double velocity = points[nextPointToSend][4];
     		point.position = position; 
     		point.velocity = velocity; 
     		point.zeroPos = (nextPointToSend==0) ? true:false; 
     		point.isLastPoint = (nextPointToSend==points.length-1) ? true:false; 
     		point.profileSlotSelect0 = slot;
-    		point.timeDur = getTrajectoryDuration((int) points[nextPointToSend][2]);
+    		point.timeDur = getTrajectoryDuration((int) (points[nextPointToSend][0]*10));
     		talon.pushMotionProfileTrajectory(point);
     		nextPointToSend++;
     	}
