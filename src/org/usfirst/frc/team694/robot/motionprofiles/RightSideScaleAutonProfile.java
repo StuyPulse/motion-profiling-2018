@@ -1,6 +1,6 @@
 package org.usfirst.frc.team694.robot.motionprofiles;
 
-public interface RightSideScaleAuton {
+public interface RightSideScaleAutonProfile {
 	double[][] leftPoints = 
 		{
 			//{dt,x,y,position,velocity,acceleration,jerk,heading},
