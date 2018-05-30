@@ -7,10 +7,12 @@
 
 package org.usfirst.frc.team694.robot;
 
+import org.usfirst.frc.team694.robot.commands.auton.RightSideScaleAutonCommand;
 import org.usfirst.frc.team694.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -36,8 +38,8 @@ public class Robot extends IterativeRobot {
 	public void robotInit() {
 		drivetrain = new Drivetrain();
 		m_oi = new OI();
-		//m_chooser.addDefault("Default Auto", new ExampleCommand());
-		// chooser.addObject("My Auto", new MyAutoCommand());
+		m_chooser.addDefault("Default Auto", new CommandGroup());
+		m_chooser.addObject("My Auto", new RightSideScaleAutonCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
 		SmartDashboard.putNumber("Motion Profile P", 0);
 		SmartDashboard.putNumber("Motion Profile I", 0);
@@ -113,7 +115,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		drivetrain.tankDrive(m_oi.joystick.getRawAxis(1), m_oi.joystick.getRawAxis(3));
+		drivetrain.tankDrive(0.75, 0.75);
 	}
 
 	/**
@@ -124,9 +126,9 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void updateSmartDashboard(){
-		SmartDashboard.putNumber("Angle", Robot.drivetrain.getGyroAngle());
-		SmartDashboard.putNumber("Acceleration", drivetrain.getAcceleration());
-		SmartDashboard.putNumber("Distance", Robot.drivetrain.getDistance());
+		//SmartDashboard.putNumber("Angle", Robot.drivetrain.getGyroAngle());
+		//SmartDashboard.putNumber("Acceleration", drivetrain.getAcceleration());
+		//SmartDashboard.putNumber("Distance", Robot.drivetrain.getDistance());
 		SmartDashboard.putNumber("Velocity", Robot.drivetrain.getVelocity());
 	}
 }

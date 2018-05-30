@@ -20,8 +20,6 @@ public class DrivetrainMotionProfileCommand extends Command {
 
 	double[][] leftPoints;
 	double[][] rightPoints;
-	
-    public double fGain;
     
     public int duration;
     
@@ -38,8 +36,6 @@ public class DrivetrainMotionProfileCommand extends Command {
         requires(Robot.drivetrain);
         this.leftPoints = leftPoints;
         this.rightPoints = rightPoints;
-        
-        fGain = (Robot.drivetrain.MOTOR_OUTPUT * 1023)/Robot.drivetrain.VELOCITY;
         //Duration will be hard-coded! The default is 10, but can change. 
         duration = 10;
         
@@ -59,10 +55,10 @@ public class DrivetrainMotionProfileCommand extends Command {
     	setMotionProfile(setValue);
     	setGains(
     			profileSlot,
-    			fGain,
-    			SmartDashboard.getNumber("Motion Profile P", 0),
+    			Robot.drivetrain.fgain,
+    			SmartDashboard.getNumber("Motion Profile P", 0.006),
     			SmartDashboard.getNumber("Motion Profile I", 0),
-    			SmartDashboard.getNumber("Motion Profile D", 0)
+    			SmartDashboard.getNumber("Motion Profile D", 0.03)
     			);
     	profileProcessor.startPeriodic(duration/1000);
     }
@@ -164,14 +160,14 @@ public class DrivetrainMotionProfileCommand extends Command {
     	}else if(!talon.isMotionProfileTopLevelBufferFull() && nextPointToSend < points.length){
     		TrajectoryPoint point = new TrajectoryPoint();
     		//Must be in native units!!!!!!!!!!
-    		double position = points[nextPointToSend][3];
-    		double velocity = points[nextPointToSend][4];
+    		double position = points[nextPointToSend][0];
+    		double velocity = points[nextPointToSend][1];
     		point.position = position; 
     		point.velocity = velocity; 
     		point.zeroPos = (nextPointToSend == 0) ? true:false; 
     		point.isLastPoint = (nextPointToSend == points.length-1) ? true:false; 
     		point.profileSlotSelect0 = slot;
-    		point.timeDur = getTrajectoryDuration((int) (points[nextPointToSend][0]*100));
+    		point.timeDur = getTrajectoryDuration((int) (points[nextPointToSend][2]));
     		talon.pushMotionProfileTrajectory(point);
     		nextPointToSend++;
     	}

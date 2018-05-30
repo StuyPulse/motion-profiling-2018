@@ -1,5 +1,7 @@
 package org.usfirst.frc.team694.robot.subsystems;
 
+import org.usfirst.frc.team694.robot.Robot;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -31,6 +33,7 @@ public class Drivetrain extends Subsystem {
     //These will be constants in Robot Map in the future 
     public final double MOTOR_OUTPUT = 0;
     public final double VELOCITY = 0;
+    public double fgain; 
     
     public AHRS navx;
     
@@ -59,6 +62,8 @@ public class Drivetrain extends Subsystem {
     	rightTopMotor.setInverted(true);
     	rightMiddleMotor.setInverted(true);
     	rightBottomMotor.setInverted(true);
+    	
+    	fgain = (Robot.drivetrain.MOTOR_OUTPUT * 1023)/Robot.drivetrain.VELOCITY;
     	
     	navx = new AHRS(SPI.Port.kMXP);
     	
