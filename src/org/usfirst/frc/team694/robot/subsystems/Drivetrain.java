@@ -24,15 +24,15 @@ public class Drivetrain extends Subsystem {
 	private final int LEFT_TOP_MOTOR_PORT = 3;
 	private final int LEFT_MIDDLE_MOTOR_PORT = 2; 
     private final int LEFT_BOTTOM_MOTOR_PORT = 1;
-    private final int RIGHT_TOP_MOTOR_PORT = 7;
-    private final int RIGHT_MIDDLE_MOTOR_PORT = 6; 
-    private final int RIGHT_BOTTOM_MOTOR_PORT = 5; 
+    private final int RIGHT_TOP_MOTOR_PORT = 6;
+    private final int RIGHT_MIDDLE_MOTOR_PORT = 5; 
+    private final int RIGHT_BOTTOM_MOTOR_PORT = 4; 
 
     // Must be in native units!!!!!!!!!!!!!!!!!!!!
     //TODO: Get the actual values
     //These will be constants in Robot Map in the future 
-    public final double MOTOR_OUTPUT = 0;
-    public final double VELOCITY = 0;
+    public final double MOTOR_OUTPUT = 1;
+    public final double VELOCITY = 17;
     public double fgain; 
     
     public AHRS navx;
@@ -63,7 +63,7 @@ public class Drivetrain extends Subsystem {
     	rightMiddleMotor.setInverted(true);
     	rightBottomMotor.setInverted(true);
     	
-    	fgain = (Robot.drivetrain.MOTOR_OUTPUT * 1023)/Robot.drivetrain.VELOCITY;
+    	fgain = (MOTOR_OUTPUT * 1023) / VELOCITY;
     	
     	navx = new AHRS(SPI.Port.kMXP);
     	
