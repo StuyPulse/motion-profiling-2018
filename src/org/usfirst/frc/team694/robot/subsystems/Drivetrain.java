@@ -1,7 +1,5 @@
 package org.usfirst.frc.team694.robot.subsystems;
 
-import org.usfirst.frc.team694.robot.Robot;
-
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -32,7 +30,7 @@ public class Drivetrain extends Subsystem {
     //TODO: Get the actual values
     //These will be constants in Robot Map in the future 
     public final double MOTOR_OUTPUT = 1;
-    public final double VELOCITY = 17;
+    public final double VELOCITY = 6252;
     public double fgain; 
     
     public AHRS navx;

@@ -73,12 +73,11 @@ public class DrivetrainMotionProfileCommand extends Command {
     		System.out.println("Motors have underrun");
     	} else if(leftStatus.btmBufferCnt > 5 && rightStatus.btmBufferCnt > 5) {
     		setValue = SetValueMotionProfile.Enable; 
-    		System.out.println("Path has started");
+    		System.out.println("Path is running");
     	} else if(leftStatus.activePointValid && leftStatus.isLast && rightStatus.activePointValid && rightStatus.isLast) {
     		setValue = SetValueMotionProfile.Hold;
     		System.out.println("Path is up to the last point");
     	}
-    	
     	setMotionProfile(setValue);
     }
 
