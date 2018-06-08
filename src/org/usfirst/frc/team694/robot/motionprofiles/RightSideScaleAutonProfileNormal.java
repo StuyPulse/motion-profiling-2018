@@ -1,9 +1,9 @@
 package org.usfirst.frc.team694.robot.motionprofiles;
 
-public interface RightSideScaleAutonProfile {
+public interface RightSideScaleAutonProfileNormal {
 	double[][] leftPoints = 
 		{
-				//{Position, Velocity, Time Duration}
+				//{Position(ft), Velocity(ft/sec), Time Duration(ms)}
 				{0.000028, 0.005549, 10},
 				{0.000066, 0.003873, 10},
 				{0.000316, 0.024971, 10},
@@ -514,7 +514,7 @@ public interface RightSideScaleAutonProfile {
 			};
 	double[][] rightPoints = 
 		{
-				//{Position, Velocity, Time Duration}
+				//{Position(ft), Velocity(ft/sec), Time Duration(ms)}
 				{0.000028, 0.005549, 10},
 				{0.000066, 0.003873, 10},
 				{0.000316, 0.024971, 10},

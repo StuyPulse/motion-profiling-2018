@@ -169,6 +169,7 @@ public class DrivetrainMotionProfileCommand extends Command {
     		point.timeDur = getTrajectoryDuration((int) (points[nextPointToSend][2]));
     		talon.pushMotionProfileTrajectory(point);
     		nextPointToSend++;
+    		System.out.println("Point sent");
     	}
     	return nextPointToSend; 
     }
