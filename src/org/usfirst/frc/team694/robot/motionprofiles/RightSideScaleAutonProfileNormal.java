@@ -511,7 +511,7 @@ public interface RightSideScaleAutonProfileNormal {
 				{27.156641, 0.002586, 10},
 				{27.156642, 0.000109, 10},
 				{27.156642, 0.000000, 10},
-			};
+		};
 	double[][] rightPoints = 
 		{
 				//{Position(ft), Velocity(ft/sec), Time Duration(ms)}
