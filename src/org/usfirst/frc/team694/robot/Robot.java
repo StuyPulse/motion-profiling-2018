@@ -7,6 +7,7 @@
 
 package org.usfirst.frc.team694.robot;
 
+import org.usfirst.frc.team694.robot.commands.auton.RightSideScaleAutonJaciCommand;
 import org.usfirst.frc.team694.robot.commands.auton.RightSideScaleAutonNormalCommand;
 import org.usfirst.frc.team694.robot.commands.auton.RightSideScaleAutonTalonModCommand;
 import org.usfirst.frc.team694.robot.subsystems.Drivetrain;
@@ -42,6 +43,7 @@ public class Robot extends IterativeRobot {
 		m_chooser.addDefault("Default Auto", new CommandGroup());
 		m_chooser.addObject("RightSideScale Normal", new RightSideScaleAutonNormalCommand());
 		m_chooser.addObject("RightSideScale TalonMod", new RightSideScaleAutonTalonModCommand());
+		m_chooser.addObject("RightScaleAuton Jaci", new RightSideScaleAutonJaciCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
 		SmartDashboard.putNumber("Motion Profile P", 0);
 		SmartDashboard.putNumber("Motion Profile I", 0);

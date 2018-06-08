@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 /**
  *
  */
-public class DrivetrainMotionProfileCommand extends Command {
+public class DrivetrainMotionProfileTalonCommand extends Command {
 
 	double[][] leftPoints;
 	double[][] rightPoints;
@@ -32,7 +32,7 @@ public class DrivetrainMotionProfileCommand extends Command {
 	
 	public Notifier profileProcessor;
 	
-    public DrivetrainMotionProfileCommand(double[][] leftPoints, double[][] rightPoints) {
+    public DrivetrainMotionProfileTalonCommand(double[][] leftPoints, double[][] rightPoints) {
         requires(Robot.drivetrain);
         this.leftPoints = leftPoints;
         this.rightPoints = rightPoints;
