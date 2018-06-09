@@ -1,6 +1,10 @@
 package org.usfirst.frc.team694.robot.commands;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 import org.usfirst.frc.team694.robot.Robot;
 
@@ -23,14 +27,23 @@ public class DrivetrainMotionProfileJaciCommand extends Command {
 	Trajectory leftTraj; 
 	Trajectory rightTraj;
 	
-	//In ft/sec
 	double maxVelocity; 
-    public DrivetrainMotionProfileJaciCommand(String leftPoints, String rightPoints, double maxVelocity) {
+	
+	double leftPower; 
+	double rightPower; 
+    public DrivetrainMotionProfileJaciCommand(String nameOfPath, double maxVelocity) {
     	requires(Robot.drivetrain);
-    	leftCSV = new File(leftPoints);
-    	rightCSV = new File(rightPoints);
-    	//Pathfinder needs velocity in m/sec
-    	this.maxVelocity = maxVelocity * 0.3048; 
+    	leftCSV = new File("src/org/usfirst/frc/team694/robot" + nameOfPath + "_left_Jaci.csv");
+    	rightCSV = new File("src/org/usfirst/frc/team694/robot" + nameOfPath + "_right_Jaci.csv");
+    	try {
+    		URL leftURL = new URL(getClass().getResource(nameOfPath) + "_left_Jaci.csv");
+    		URL rightURL = new URL(getClass().getResource(nameOfPath) + "_right_Jaci.csv");
+    		Files.copy(leftURL.openStream(), leftCSV.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    		Files.copy(rightURL.openStream(), rightCSV.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    	}catch(IOException i) {
+    		System.out.println("Invalid Trajectory");
+    	}
+    	this.maxVelocity = maxVelocity; 
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
@@ -41,9 +54,9 @@ public class DrivetrainMotionProfileJaciCommand extends Command {
     	rightTraj = Pathfinder.readFromCSV(rightCSV);
     	leftFollower = new EncoderFollower(leftTraj);
     	rightFollower = new EncoderFollower(rightTraj);
-    	//Wheel diameter in meters
-    	leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition(), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER * 0.0254);
-    	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER * 0.0254);
+    	//Wheel diameter in feet
+    	leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition(), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER / 12);
     	leftFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
     	rightFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
     }
@@ -55,14 +68,20 @@ public class DrivetrainMotionProfileJaciCommand extends Command {
     	double gyroHeading = Robot.drivetrain.getGyroAngle();
     	double desiredHeading = Pathfinder.r2d(leftFollower.getHeading());
     	double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
-    	double turn = 0.8 * (-1.0 / 80.0) * angleDifference; 
-    	Robot.drivetrain.leftBottomMotor.set(leftOutput + turn);
-    	Robot.drivetrain.rightBottomMotor.set(rightOutput - turn);
+    	double turn = 0.8 * (-1.0 / 80.0) * angleDifference;
+    	leftPower = leftOutput + turn; 
+    	rightPower = rightOutput - turn; 
+    	Robot.drivetrain.leftBottomMotor.set(leftPower);
+    	Robot.drivetrain.rightBottomMotor.set(rightPower);
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        if((leftPower > -0.01 && leftPower < 0.01) && (rightPower > -0.01 && rightPower < 0.01)) {
+        	return true; 
+        }else {
+        	return false; 
+        }
     }
 
     // Called once after isFinished returns true
