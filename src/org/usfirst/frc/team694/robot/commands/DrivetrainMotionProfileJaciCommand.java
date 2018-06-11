@@ -41,7 +41,8 @@ public class DrivetrainMotionProfileJaciCommand extends Command {
     		Files.copy(leftURL.openStream(), leftCSV.toPath(), StandardCopyOption.REPLACE_EXISTING);
     		Files.copy(rightURL.openStream(), rightCSV.toPath(), StandardCopyOption.REPLACE_EXISTING);
     	}catch(IOException i) {
-    		System.out.println("Invalid Trajectory");
+    		System.out.println("Invalid Trajectory, Aborting");
+    		cancel(); 
     	}
     	this.maxVelocity = maxVelocity; 
         // Use requires() here to declare subsystem dependencies
@@ -55,22 +56,28 @@ public class DrivetrainMotionProfileJaciCommand extends Command {
     	leftFollower = new EncoderFollower(leftTraj);
     	rightFollower = new EncoderFollower(rightTraj);
     	//Wheel diameter in feet
-    	leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition(), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER / 12);
-    	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	//leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition(), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	//rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSelectedSensorPosition(0), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSelectedSensorPosition(0), Robot.drivetrain.DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION, Robot.drivetrain.DRIVETRAIN_WHEEL_DIAMETER / 12);
     	leftFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
     	rightFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double leftOutput = leftFollower.calculate(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition());
-    	double rightOutput = rightFollower.calculate(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition());
+    	//double leftOutput = leftFollower.calculate(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition());
+    	//double rightOutput = rightFollower.calculate(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition());
+    	double leftOutput = leftFollower.calculate(Robot.drivetrain.leftBottomMotor.getSelectedSensorPosition(0));
+    	double rightOutput = rightFollower.calculate(Robot.drivetrain.rightBottomMotor.getSelectedSensorPosition(0));
     	double gyroHeading = Robot.drivetrain.getGyroAngle();
     	double desiredHeading = Pathfinder.r2d(leftFollower.getHeading());
     	double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
     	double turn = 0.8 * (-1.0 / 80.0) * angleDifference;
     	leftPower = leftOutput + turn; 
+    	System.out.println("Left Power: " + leftPower);
     	rightPower = rightOutput - turn; 
+    	System.out.println("Right Power: " + rightPower);
     	Robot.drivetrain.leftBottomMotor.set(leftPower);
     	Robot.drivetrain.rightBottomMotor.set(rightPower);
     }
@@ -78,6 +85,7 @@ public class DrivetrainMotionProfileJaciCommand extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
         if((leftPower > -0.01 && leftPower < 0.01) && (rightPower > -0.01 && rightPower < 0.01)) {
+        	System.out.println("Ending Motion Profile");
         	return true; 
         }else {
         	return false; 
