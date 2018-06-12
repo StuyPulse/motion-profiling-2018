@@ -111,5 +111,9 @@ public class Drivetrain extends Subsystem {
     	leftBottomMotor.set(l);
     	rightBottomMotor.set(r);
     }
+    
+    public void stop() {
+    	tankDrive(0, 0);
+    }
 }
 
