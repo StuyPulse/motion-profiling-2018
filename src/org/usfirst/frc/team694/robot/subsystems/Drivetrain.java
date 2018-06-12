@@ -1,6 +1,9 @@
 package org.usfirst.frc.team694.robot.subsystems;
 
+import org.usfirst.frc.team694.robot.RobotMap;
+
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
@@ -25,19 +28,8 @@ public class Drivetrain extends Subsystem {
     private final int RIGHT_TOP_MOTOR_PORT = 6;
     private final int RIGHT_MIDDLE_MOTOR_PORT = 5; 
     private final int RIGHT_BOTTOM_MOTOR_PORT = 4; 
-
-    // Must be in native units!!!!!!!!!!!!!!!!!!!!
-    //TODO: Get the actual values
-    //These will be constants in Robot Map in the future 
-    public final double MOTOR_OUTPUT = 1;
-    public final double VELOCITY = 6252;
-    public double fgain; 
     
     public AHRS navx;
-    
-    public final int DRIVETRAIN_WHEEL_DIAMETER = 6; 
-    public final int DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION = 256;
-    public final double DRIVETRAIN_ENCODER_INCHES_PER_REVOLUTION = Math.PI * DRIVETRAIN_WHEEL_DIAMETER;
 
     public void initDefaultCommand() {
         // Set the default command for a subsystem here.
@@ -57,16 +49,21 @@ public class Drivetrain extends Subsystem {
     	rightTopMotor.follow(rightBottomMotor);
     	rightMiddleMotor.follow(rightBottomMotor);
     	
-    	rightTopMotor.setInverted(true);
-    	rightMiddleMotor.setInverted(true);
-    	rightBottomMotor.setInverted(true);
+    	leftTopMotor.setInverted(true);
+    	leftMiddleMotor.setInverted(true);
+    	leftBottomMotor.setInverted(true);
     	
-    	fgain = (MOTOR_OUTPUT * 1023) / VELOCITY;
-    	
-    	navx = new AHRS(SPI.Port.kMXP);
+    	leftTopMotor.setNeutralMode(NeutralMode.Brake);
+        leftMiddleMotor.setNeutralMode(NeutralMode.Brake);
+        leftBottomMotor.setNeutralMode(NeutralMode.Brake);
+        rightTopMotor.setNeutralMode(NeutralMode.Brake);
+        rightMiddleMotor.setNeutralMode(NeutralMode.Brake);
+        rightBottomMotor.setNeutralMode(NeutralMode.Brake);
     	
     	leftBottomMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
     	rightBottomMotor.configSelectedFeedbackSensor(FeedbackDevice.QuadEncoder, 0, 0);
+    	
+    	navx = new AHRS(SPI.Port.kMXP);
     }
     
     public void resetGyro(){
@@ -81,12 +78,17 @@ public class Drivetrain extends Subsystem {
     	return Math.sqrt(Math.pow(navx.getWorldLinearAccelX(), 2) + Math.pow(navx.getWorldLinearAccelY(), 2)); 
     }
     
+    public void resetEncoders() {
+    	leftBottomMotor.setSelectedSensorPosition(0, 0, 100);
+    	rightBottomMotor.setSelectedSensorPosition(0, 0, 100);
+    }
+    
     public double getLeftDistance(){
-    	return (leftBottomMotor.getSelectedSensorPosition(0) / DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION) * DRIVETRAIN_ENCODER_INCHES_PER_REVOLUTION;
+    	return leftBottomMotor.getSelectedSensorPosition(0) * RobotMap.DRIVETRAIN_RAW_MULTIPLIER;
     }
   
     public double getRightDistance(){
-    	return -1 * (rightBottomMotor.getSelectedSensorPosition(0) / DRIVETRAIN_ENCODER_PULSES_PER_REVOLUTION) * DRIVETRAIN_ENCODER_INCHES_PER_REVOLUTION;
+    	return -1 * rightBottomMotor.getSelectedSensorPosition(0) * RobotMap.DRIVETRAIN_RAW_MULTIPLIER;
     }
     
     public double getDistance(){

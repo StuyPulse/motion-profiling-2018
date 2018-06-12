@@ -126,9 +126,9 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void updateSmartDashboard(){
-		//SmartDashboard.putNumber("Angle", Robot.drivetrain.getGyroAngle());
-		//SmartDashboard.putNumber("Acceleration", drivetrain.getAcceleration());
-		//SmartDashboard.putNumber("Distance", Robot.drivetrain.getDistance());
 		SmartDashboard.putNumber("Velocity", Robot.drivetrain.getVelocity());
+		SmartDashboard.putNumber("Acceleration", drivetrain.getAcceleration());
+		SmartDashboard.putNumber("Angle", Robot.drivetrain.getGyroAngle());
+		SmartDashboard.putNumber("Distance", Robot.drivetrain.getDistance());
 	}
 }

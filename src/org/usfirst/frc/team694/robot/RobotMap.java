@@ -14,13 +14,20 @@ package org.usfirst.frc.team694.robot;
  * floating around.
  */
 public class RobotMap {
-	// For example to map the left and right motors, you could define the
-	// following variables to use with your drivetrain subsystem.
-	// public static int leftMotor = 1;
-	// public static int rightMotor = 2;
+	public static final double DRIVETRAIN_WHEEL_DIAMETER = 6.0;
+    public static final int DRIVETRAIN_ENCODERS_PULSES_PER_REVOLUTION = 256;
+    public static final int DRIVETRAIN_ENCODERS_FACTOR = 4;
+    public static final double DRIVETRAIN_ENCODERS_INCHES_PER_REVOLUTION = Math.PI * DRIVETRAIN_WHEEL_DIAMETER;
 
-	// If you are using multiple modules, make sure to define both the port
-	// number and the module. For example you with a rangefinder:
-	// public static int rangefinderPort = 1;
-	// public static int rangefinderModule = 1;
+    /**
+     * DRIVETRAIN_RAW_MULTIPLIER: We multiply by 4 because the encoder has 4
+     * Quadrants, and each Quadrant passes 256 pulses.
+     **/
+
+    // Extra factor imperically determined
+    private static final double DRIVETRAIN_EMPERICAL_RAW_MULTIPLIER = (63.7 / 63.0) * 61.1 / ((463.544 + 461.814) / 2.0);//163/1246.0;
+
+    public static final double DRIVETRAIN_RAW_MULTIPLIER = 
+            DRIVETRAIN_EMPERICAL_RAW_MULTIPLIER * DRIVETRAIN_ENCODERS_INCHES_PER_REVOLUTION
+            / (DRIVETRAIN_ENCODERS_PULSES_PER_REVOLUTION * DRIVETRAIN_ENCODERS_FACTOR);
 }
