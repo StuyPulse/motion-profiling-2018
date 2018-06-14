@@ -71,10 +71,11 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     protected void execute() {
     	//Conversion to feet
     	double leftOutput = leftFollower.calculate(Robot.drivetrain.getLeftDistance() / 12);
-    	double rightOutput =  rightFollower.calculate(Robot.drivetrain.getLeftDistance() / 12);
+    	double rightOutput =  rightFollower.calculate(Robot.drivetrain.getRightDistance() / 12);
     	double gyroHeading = Robot.drivetrain.getGyroAngle();
     	double desiredHeading = Pathfinder.r2d(leftFollower.getHeading());
-    	double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
+    	//double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
+    	double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading + gyroHeading);
     	double turn = 0.8 * (-1.0 * 80.0) * angleDifference;
     	Robot.drivetrain.tankDrive(leftOutput + turn, rightOutput - turn);
     	System.out.println("Left Power: " + (leftOutput + turn) + "Right Power: " + (rightOutput - turn));

@@ -65,23 +65,24 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     	leftFollower.reset();
     	rightFollower.reset();
     	//Wheel diameter in feet
-    	leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
-    	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
-    	//leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSelectedSensorPosition(0), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
-    	//rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSelectedSensorPosition(0), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	//leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	//rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSelectedSensorPosition(0), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSelectedSensorPosition(0), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
     	leftFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
     	rightFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	double leftOutput = leftFollower.calculate(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition());
-    	double rightOutput = rightFollower.calculate(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition());
-    	//double leftOutput = leftFollower.calculate(Robot.drivetrain.leftBottomMotor.getSelectedSensorPosition(0));
-    	//double rightOutput = rightFollower.calculate(Robot.drivetrain.rightBottomMotor.getSelectedSensorPosition(0));
+    	//double leftOutput = leftFollower.calculate(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition());
+    	//double rightOutput = rightFollower.calculate(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition());
+    	double leftOutput = leftFollower.calculate(Robot.drivetrain.leftBottomMotor.getSelectedSensorPosition(0));
+    	double rightOutput = rightFollower.calculate(Robot.drivetrain.rightBottomMotor.getSelectedSensorPosition(0));
     	double gyroHeading = Robot.drivetrain.getGyroAngle();
     	double desiredHeading = Pathfinder.r2d(leftFollower.getHeading());
-    	double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
+    	//double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
+    	double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading + gyroHeading);
     	double turn = 0.8 * (-1.0 / 80.0) * angleDifference;
     	Robot.drivetrain.tankDrive(leftOutput + turn, rightOutput - turn);
     	System.out.println("Left Power: " + (leftOutput + turn) + "Right Power: " + (rightOutput - turn));
