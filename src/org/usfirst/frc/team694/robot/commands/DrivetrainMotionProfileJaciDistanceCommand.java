@@ -31,19 +31,9 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     public DrivetrainMotionProfileJaciDistanceCommand(String nameOfPath, double maxVelocity) {
     	leftCSV = new File("/home/lvuser/" + nameOfPath + "_left_Jaci.csv");
     	rightCSV = new File("/home/lvuser/" + nameOfPath + "_right_Jaci.csv");
-    	try {
-    		//Not too sure how much we need this part
-    		Files.copy(getClass().getResource("home/lvuser/" + nameOfPath + "_left_Jaci.csv").openStream(), leftCSV.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    		Files.copy(getClass().getResource("home/lvuser/" + nameOfPath + "_right_Jaci.csv").openStream(), rightCSV.toPath(), StandardCopyOption.REPLACE_EXISTING);
-    		leftTraj = Pathfinder.readFromCSV(leftCSV);
-    		rightTraj = Pathfinder.readFromCSV(rightCSV);
-    		System.out.println("CSV has been locked and loaded");
-    	}catch (IOException i) {
-    		System.out.println("Invalid Trajectory, Aborting");
-    		cancel();
-    	}catch (Exception e) {
-    		System.err.println(e);
-    	}
+    	leftTraj = Pathfinder.readFromCSV(leftCSV);
+    	rightTraj = Pathfinder.readFromCSV(rightCSV);
+    	System.out.println("CSV has been locked and loaded");
     	this.maxVelocity = maxVelocity; 
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -74,7 +64,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     	double rightOutput =  rightFollower.calculate(Robot.drivetrain.getRightDistance() / 12);
     	double gyroHeading = Robot.drivetrain.getGyroAngle();
     	double desiredHeading = Pathfinder.r2d(leftFollower.getHeading());
-    	//double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading - gyroHeading);
+    	//Pathfinder is counter-clockwise while gyro is clockwise so gyro heading is added 
     	double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading + gyroHeading);
     	double turn = 0.8 * (-1.0 * 80.0) * angleDifference;
     	Robot.drivetrain.tankDrive(leftOutput + turn, rightOutput - turn);
@@ -84,6 +74,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
         if(leftFollower.isFinished() && rightFollower.isFinished()) {
+        	System.out.println("Path has finished");
         	return true; 
         }else {
         	return false; 
