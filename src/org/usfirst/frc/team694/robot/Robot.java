@@ -7,7 +7,6 @@
 
 package org.usfirst.frc.team694.robot;
 
-import org.usfirst.frc.team694.robot.commands.auton.RightSideScaleAutonJaciCommand;
 import org.usfirst.frc.team694.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -39,11 +38,12 @@ public class Robot extends IterativeRobot {
 		drivetrain = new Drivetrain();
 		m_oi = new OI();
 		m_chooser.addDefault("Default Auto", new CommandGroup());
-		m_chooser.addObject("RightScaleAuton Jaci", new RightSideScaleAutonJaciCommand());
+		//m_chooser.addObject(name, object);;
 		SmartDashboard.putData("Auto mode", m_chooser);
 		SmartDashboard.putNumber("Motion Profile P", 0);
 		SmartDashboard.putNumber("Motion Profile I", 0);
 		SmartDashboard.putNumber("Motion Profile D", 0);
+		SmartDashboard.putNumber("Accel Gain", 0);
 	}
 
 	/**
@@ -87,6 +87,8 @@ public class Robot extends IterativeRobot {
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.start();
 		}
+		Robot.drivetrain.resetEncoders(); 
+    	Robot.drivetrain.resetGyro();
 	}
 
 	/**
@@ -95,7 +97,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		updateSmartDashboard();
+		//updateSmartDashboard();
 	}
 
 	@Override
@@ -115,7 +117,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		drivetrain.tankDrive(0.75, 0.75);
+		//drivetrain.tankDrive(0.75, 0.75);
 	}
 
 	/**

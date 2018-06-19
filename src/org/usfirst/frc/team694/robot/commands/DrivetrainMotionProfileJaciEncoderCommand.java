@@ -46,8 +46,6 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.drivetrain.resetEncoders(); 
-    	Robot.drivetrain.resetGyro();
     	leftFollower = new EncoderFollower(leftTraj);
     	rightFollower = new EncoderFollower(rightTraj);
     	leftFollower.reset();
@@ -55,8 +53,8 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     	//Wheel diameter in feet
     	leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
     	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
-    	leftFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
-    	rightFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
+    	leftFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.0), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.0), 1 / maxVelocity, SmartDashboard.getNumber("Accel Gain", 0));
+    	rightFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.0), SmartDashboard.getNumber("Motion Profile I", 0), SmartDashboard.getNumber("Motion Profile D", 0.0), 1 / maxVelocity, SmartDashboard.getNumber("Accel Gain", 0));
     }
 
     // Called repeatedly when this Command is scheduled to run

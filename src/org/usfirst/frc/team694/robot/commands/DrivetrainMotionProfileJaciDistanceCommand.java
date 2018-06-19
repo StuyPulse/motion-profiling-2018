@@ -47,14 +47,12 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.drivetrain.resetEncoders();
-    	Robot.drivetrain.resetGyro();
     	leftFollower = new DistanceFollower(leftTraj);
     	rightFollower = new DistanceFollower(rightTraj);
     	leftFollower.reset();
     	rightFollower.reset();
-    	leftFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0.0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
-    	rightFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.006), SmartDashboard.getNumber("Motion Profile I", 0.0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, 0);
+    	leftFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.0), SmartDashboard.getNumber("Motion Profile I", 0.0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, SmartDashboard.getNumber("Accel Gain", 0));
+    	rightFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.0), SmartDashboard.getNumber("Motion Profile I", 0.0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, SmartDashboard.getNumber("Accel Gain", 0));
     }
 
     // Called repeatedly when this Command is scheduled to run
