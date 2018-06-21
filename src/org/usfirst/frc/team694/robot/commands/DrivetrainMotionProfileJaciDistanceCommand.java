@@ -24,7 +24,9 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
 	File leftCSV; 
 	File rightCSV; 
 	
-	double maxVelocity; 
+	double maxVelocity;
+	
+	double segmentNumber;
     public DrivetrainMotionProfileJaciDistanceCommand(String nameOfPath, double maxVelocity) {
     	leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
     	rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv");
@@ -50,6 +52,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     	rightFollower.reset();
     	leftFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.0), SmartDashboard.getNumber("Motion Profile I", 0.0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, SmartDashboard.getNumber("Accel Gain", 0));
     	rightFollower.configurePIDVA(SmartDashboard.getNumber("Motion Profile P", 0.0), SmartDashboard.getNumber("Motion Profile I", 0.0), SmartDashboard.getNumber("Motion Profile D", 0.03), 1 / maxVelocity, SmartDashboard.getNumber("Accel Gain", 0));
+    	segmentNumber = 0; 
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -64,11 +67,12 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     	double turn = 0.8 * (-1.0 * 80.0) * angleDifference;
     	Robot.drivetrain.tankDrive(leftOutput + turn, rightOutput - turn);
     	System.out.println("Left Power: " + (leftOutput + turn) + "Right Power: " + (rightOutput - turn));
+    	segmentNumber++; 
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        if(leftFollower.isFinished() && rightFollower.isFinished()) {
+        if((leftFollower.isFinished() && rightFollower.isFinished()) || isFinishing()) {
         	System.out.println("Path has finished");
         	return true; 
         }else {
@@ -86,4 +90,10 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     protected void interrupted() {
     	Robot.drivetrain.stop();
     }
+    
+  //Checks if there are few points left and if the percent output is low
+  public boolean isFinishing() {
+	  return (segmentNumber <= leftTraj.length() - 5 && segmentNumber <= rightTraj.length() - 5)
+			  && (Robot.drivetrain.leftBottomMotor.getMotorOutputPercent() <= 0.05 && Robot.drivetrain.rightBottomMotor.getMotorOutputPercent() <= 0.05);
+  }
 }
