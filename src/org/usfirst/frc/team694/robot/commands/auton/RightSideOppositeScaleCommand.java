@@ -11,7 +11,7 @@ public class RightSideOppositeScaleCommand extends CommandGroup {
 
     public RightSideOppositeScaleCommand() {
     	//Accel Gain: 0.014
-    	//TODO: Give the csv a better name
-    	addSequential(new DrivetrainMotionProfileJaciEncoderCommand("DifferentSideLeftScaleAuton", 29));
+    	//velocity parameter: 12
+    	addSequential(new DrivetrainMotionProfileJaciEncoderCommand("RightSideOppositeScale", 12));
     }
 }

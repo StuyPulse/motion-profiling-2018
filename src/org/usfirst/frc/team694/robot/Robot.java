@@ -7,6 +7,13 @@
 
 package org.usfirst.frc.team694.robot;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 import org.usfirst.frc.team694.robot.commands.auton.RightSideOppositeScaleCommand;
 import org.usfirst.frc.team694.robot.subsystems.Drivetrain;
 
@@ -34,7 +41,12 @@ public class Robot extends IterativeRobot {
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
-	public static double startTime; 
+	public static double startTime;
+	
+	boolean logOpen; 
+	public String logOutputDir = "/U/MotionProfileData";
+	public String logName; 
+	public BufferedWriter logFile; 
 	@Override
 	public void robotInit() {
 		drivetrain = new Drivetrain();
@@ -93,6 +105,8 @@ public class Robot extends IterativeRobot {
 		Robot.drivetrain.resetEncoders(); 
     	Robot.drivetrain.resetGyro();
     	startTime = Timer.getFPGATimestamp();
+    	initLog("LeftDistance RightDistance LeftVelocity RightVelocity LeftAcceleration RightAcceleration", 
+    			"ft ft ft/sec ft/sec ft/sec/sec ft/sec/sec"); 
 	}
 
 	/**
@@ -101,7 +115,11 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		putSmartDashboardData(); 
+		putSmartDashboardData();
+		logData();
+		if(m_autonomousCommand.isCompleted()) {
+			closeFile(); 
+		}
 	}
 
 	@Override
@@ -142,7 +160,79 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Right Acceleration", inToFt(Robot.drivetrain.getRightAcceleration()));
 	}
 	
+	public void logData() {
+		writeToFile("" + SmartDashboard.getNumber("Left Distance", 0)
+					+ SmartDashboard.getNumber("Right Distance", 0)
+					+ SmartDashboard.getNumber("Left Velocity", 0)
+					+ SmartDashboard.getNumber("Right Velocity", 0)
+					+ SmartDashboard.getNumber("Left Acceleration", 0)
+					+ SmartDashboard.getNumber("Right Acceleration", 0));
+		sendData(); 
+	}
+	
 	public double inToFt(double value) {
 		return value / 12; 
+	}
+	
+	public void initLog(String data, String units) {
+		if(logOpen) {
+			System.out.println("Log file is already open");
+		}else {
+			try {
+				logOpen = false; 
+				logName = logOutputDir + "log_" + getDateTimeString() + ".csv";
+				FileWriter fStream = new FileWriter(logName, true);
+				logFile = new BufferedWriter(fStream);
+				logFile.write(data + "\n");
+				logFile.write(units + "\n");
+			}catch(Exception e) {
+				System.out.println("Error setting up" + e.getMessage());
+			}
+		}
+	}
+	
+	public void writeToFile(String text) {
+		if(!logOpen) {
+			System.out.println("Log file closed cannot write");
+		}else {
+			try {
+				logFile.write(text + "\n");
+			}catch(Exception e) {
+				System.out.println("Error writing to file" + e.getMessage());
+			}
+		}
+	}
+	
+	public void sendData() {
+		if(!logOpen) {
+			System.out.println("Log not open, cannot send");
+		}else {
+			try {
+				logFile.flush();
+			}catch(Exception e) {
+				System.out.println("Cannot send data" + e.getMessage());
+			}
+		}
+	}
+	
+	public void closeFile() {
+		if(!logOpen) {
+			System.out.println("File already closed");
+		}else {
+			sendData();
+			try {
+				logFile.close();
+				logOpen = false; 
+				System.out.println("File close");
+			}catch(Exception e) {
+				System.out.println("Error closing file" + e.getMessage());
+			}
+		}
+	}
+	
+	public String getDateTimeString() {
+		DateFormat dt = new SimpleDateFormat("MM-dd-yyyy_hh:mm:ss");
+		dt.setTimeZone(TimeZone.getDefault());
+		return dt.format(new Date());
 	}
 }
