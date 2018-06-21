@@ -28,8 +28,8 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
 	double maxVelocity; 
     public DrivetrainMotionProfileJaciEncoderCommand(String nameOfPath, double maxVelocity) {
     	requires(Robot.drivetrain);
-    	leftCSV = new File("/home/lvuser/" + nameOfPath + "_left_Jaci.csv");
-    	rightCSV = new File("/home/lvuser/" + nameOfPath + "_right_Jaci.csv");
+    	leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
+    	rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv");
     	leftTraj = Pathfinder.readFromCSV(leftCSV);
         rightTraj = Pathfinder.readFromCSV(rightCSV);
         System.out.println("CSV has been locked and loaded");

@@ -1,9 +1,6 @@
 package org.usfirst.frc.team694.robot.commands;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 
 import org.usfirst.frc.team694.robot.Robot;
 import org.usfirst.frc.team694.util.PathGenerator;
@@ -29,8 +26,8 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
 	
 	double maxVelocity; 
     public DrivetrainMotionProfileJaciDistanceCommand(String nameOfPath, double maxVelocity) {
-    	leftCSV = new File("/home/lvuser/" + nameOfPath + "_left_Jaci.csv");
-    	rightCSV = new File("/home/lvuser/" + nameOfPath + "_right_Jaci.csv");
+    	leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
+    	rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv");
     	leftTraj = Pathfinder.readFromCSV(leftCSV);
     	rightTraj = Pathfinder.readFromCSV(rightCSV);
     	System.out.println("CSV has been locked and loaded");

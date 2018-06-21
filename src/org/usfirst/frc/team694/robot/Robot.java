@@ -7,6 +7,7 @@
 
 package org.usfirst.frc.team694.robot;
 
+import org.usfirst.frc.team694.robot.commands.auton.RightSideOppositeScaleCommand;
 import org.usfirst.frc.team694.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -38,7 +39,7 @@ public class Robot extends IterativeRobot {
 		drivetrain = new Drivetrain();
 		m_oi = new OI();
 		m_chooser.addDefault("Default Auto", new CommandGroup());
-		//m_chooser.addObject(name, object);;
+		m_chooser.addObject("RightSideOppositeScale", new RightSideOppositeScaleCommand());;
 		SmartDashboard.putData("Auto mode", m_chooser);
 		SmartDashboard.putNumber("Motion Profile P", 0);
 		SmartDashboard.putNumber("Motion Profile I", 0);
@@ -125,12 +126,5 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-	}
-	
-	public void updateSmartDashboard(){
-		SmartDashboard.putNumber("Velocity", Robot.drivetrain.getVelocity());
-		SmartDashboard.putNumber("Acceleration", drivetrain.getAcceleration());
-		SmartDashboard.putNumber("Angle", Robot.drivetrain.getGyroAngle());
-		SmartDashboard.putNumber("Distance", Robot.drivetrain.getDistance());
 	}
 }
