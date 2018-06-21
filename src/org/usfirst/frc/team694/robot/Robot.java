@@ -11,6 +11,7 @@ import org.usfirst.frc.team694.robot.commands.auton.RightSideOppositeScaleComman
 import org.usfirst.frc.team694.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.Scheduler;
@@ -29,11 +30,11 @@ public class Robot extends IterativeRobot {
 	public static OI m_oi;
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
-
 	/**
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
+	public static double startTime; 
 	@Override
 	public void robotInit() {
 		drivetrain = new Drivetrain();
@@ -45,6 +46,7 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("Motion Profile I", 0);
 		SmartDashboard.putNumber("Motion Profile D", 0);
 		SmartDashboard.putNumber("Accel Gain", 0);
+		putSmartDashboardData(); 
 	}
 
 	/**
@@ -90,6 +92,7 @@ public class Robot extends IterativeRobot {
 		}
 		Robot.drivetrain.resetEncoders(); 
     	Robot.drivetrain.resetGyro();
+    	startTime = Timer.getFPGATimestamp();
 	}
 
 	/**
@@ -98,7 +101,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		//updateSmartDashboard();
+		putSmartDashboardData(); 
 	}
 
 	@Override
@@ -110,6 +113,7 @@ public class Robot extends IterativeRobot {
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.cancel();
 		}
+		startTime = Timer.getFPGATimestamp();
 	}
 
 	/**
@@ -118,6 +122,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
+		putSmartDashboardData();
 		//drivetrain.tankDrive(0.75, 0.75);
 	}
 
@@ -126,5 +131,18 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
+	}
+	
+	public void putSmartDashboardData() {
+		SmartDashboard.putNumber("Left Distance", inToFt(Robot.drivetrain.getLeftDistance()));
+		SmartDashboard.putNumber("Right Distance", inToFt(Robot.drivetrain.getRightDistance()));
+		SmartDashboard.putNumber("Left Velocity", inToFt(Robot.drivetrain.getLeftVelocity()));
+		SmartDashboard.putNumber("Right Velocity", inToFt(Robot.drivetrain.getRightVelocity()));
+		SmartDashboard.putNumber("Left Acceleration", inToFt(Robot.drivetrain.getLeftAcceleration()));
+		SmartDashboard.putNumber("Right Acceleration", inToFt(Robot.drivetrain.getRightAcceleration()));
+	}
+	
+	public double inToFt(double value) {
+		return value / 12; 
 	}
 }

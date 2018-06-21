@@ -1,5 +1,6 @@
 package org.usfirst.frc.team694.robot.subsystems;
 
+import org.usfirst.frc.team694.robot.Robot;
 import org.usfirst.frc.team694.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -9,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -74,10 +76,6 @@ public class Drivetrain extends Subsystem {
     	return navx.getAngle();
     }
     
-    public double getAcceleration(){
-    	return Math.sqrt(Math.pow(navx.getWorldLinearAccelX(), 2) + Math.pow(navx.getWorldLinearAccelY(), 2)); 
-    }
-    
     public void resetEncoders() {
     	leftBottomMotor.setSelectedSensorPosition(0, 0, 100);
     	rightBottomMotor.setSelectedSensorPosition(0, 0, 100);
@@ -94,17 +92,29 @@ public class Drivetrain extends Subsystem {
     public double getDistance(){
     	return Math.max(getLeftDistance(), getRightDistance());
     }
-    
-    public double getLeftvelocity() {
-    	return leftBottomMotor.getSelectedSensorVelocity(0);
+    //The velocities and accelerations are continuous and not instantaneous
+    public double getLeftVelocity() {
+    	return (getLeftDistance() / (Timer.getFPGATimestamp() - Robot.startTime));
     }
     
     public double getRightVelocity() {
-    	return rightBottomMotor.getSelectedSensorVelocity(0);
+    	return (getRightDistance() / (Timer.getFPGATimestamp() - Robot.startTime));
     }
     
     public double getVelocity() {
-    	return Math.max(getLeftvelocity(), getRightVelocity());
+    	return Math.max(getLeftVelocity(), getRightVelocity());
+    }
+    
+    public double getLeftAcceleration() {
+    	return (getLeftVelocity() / (Timer.getFPGATimestamp() - Robot.startTime));
+    }
+    
+    public double getRightAcceleration() {
+    	return (getRightVelocity() / (Timer.getFPGATimestamp() - Robot.startTime));
+    }
+    
+    public double getAcceleration() {
+    	return Math.max(getLeftAcceleration(), getRightAcceleration());
     }
     
     public void tankDrive(double l, double r) {
