@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class RightSideOppositeScaleCommand extends CommandGroup {
+public class DifferentSideLeftScaleAutonCommand extends CommandGroup {
 
-    public RightSideOppositeScaleCommand() {
+    public DifferentSideLeftScaleAutonCommand() {
     	//Accel Gain: 0.014
     	//velocity parameter: 12
-    	addSequential(new DrivetrainMotionProfileJaciEncoderCommand("RightSideOppositeScale", 12));
+    	addSequential(new DrivetrainMotionProfileJaciEncoderCommand("DifferentSideLeftScale", 29));
     }
 }

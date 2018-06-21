@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.usfirst.frc.team694.robot.commands.auton.RightSideOppositeScaleCommand;
+import org.usfirst.frc.team694.robot.commands.auton.DifferentSideLeftScaleAutonCommand;
 import org.usfirst.frc.team694.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -52,7 +52,7 @@ public class Robot extends IterativeRobot {
 		drivetrain = new Drivetrain();
 		m_oi = new OI();
 		m_chooser.addDefault("Default Auto", new CommandGroup());
-		m_chooser.addObject("RightSideOppositeScale", new RightSideOppositeScaleCommand());;
+		m_chooser.addObject("Different Side Left Scale", new DifferentSideLeftScaleAutonCommand());
 		SmartDashboard.putData("Auto mode", m_chooser);
 		SmartDashboard.putNumber("Motion Profile P", 0);
 		SmartDashboard.putNumber("Motion Profile I", 0);
