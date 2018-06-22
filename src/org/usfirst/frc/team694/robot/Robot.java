@@ -136,8 +136,7 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		//putSmartDashboardData();
-		logData();
+		//Data logged in data updator
 		if(m_autonomousCommand.isCompleted()) {
 			closeFile(); 
 		}
@@ -258,6 +257,8 @@ public class Robot extends IterativeRobot {
 			//get the change in velocity per dt, then multiply by a factor to get per sec
 			SmartDashboard.putNumber("Left Acceleration", (currentLeftVelocity  - lastLeftVelocity) * (1 / dt));
 			SmartDashboard.putNumber("Right Acceleration", (currentRightVelocity  - lastRightVelocity) * (1 / dt));
+			//Log the data
+			logData(); 
 			//set the last values to the current ones for next run
 			lastLeftPosition = currentLeftPosition; 
 			lastRightPosition = currentRightPosition; 
