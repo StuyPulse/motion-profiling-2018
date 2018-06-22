@@ -52,7 +52,7 @@ public class Robot extends IterativeRobot {
 	public Notifier dataUpdator; 
 	
 	public boolean logOpen; 
-	public String logOutputDir = "/U/MotionProfileData";
+	public String logOutputDir;
 	public String logName; 
 	public BufferedWriter logFile; 
 	@Override
@@ -78,6 +78,7 @@ public class Robot extends IterativeRobot {
 		lastRightPosition = 0; 
 		lastLeftVelocity = 0; 
 		lastRightVelocity = 0;
+		logOutputDir = "/home/lvuser/MotionProfileData/";
 		dataUpdator = new Notifier(new UpdateData());
 	}
 
@@ -125,9 +126,9 @@ public class Robot extends IterativeRobot {
 		Robot.drivetrain.resetEncoders(); 
     	Robot.drivetrain.resetGyro();
     	startTime = Timer.getFPGATimestamp();
-    	dataUpdator.startPeriodic(dt);
     	initLog("LeftDistance RightDistance LeftVelocity RightVelocity LeftAcceleration RightAcceleration", 
-    			"ft ft ft/sec ft/sec ft/sec/sec ft/sec/sec"); 
+    			"ft ft ft/sec ft/sec ft/sec/sec ft/sec/sec");
+    	dataUpdator.startPeriodic(dt);
 	}
 
 	/**
@@ -138,6 +139,7 @@ public class Robot extends IterativeRobot {
 		Scheduler.getInstance().run();
 		//Data logged in data updator
 		if(m_autonomousCommand.isCompleted()) {
+			dataUpdator.stop();
 			closeFile(); 
 		}
 	}
@@ -169,11 +171,11 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void logData() {
-		writeToFile("" + SmartDashboard.getNumber("Left Distance", 0)
-					+ SmartDashboard.getNumber("Right Distance", 0)
-					+ SmartDashboard.getNumber("Left Velocity", 0)
-					+ SmartDashboard.getNumber("Right Velocity", 0)
-					+ SmartDashboard.getNumber("Left Acceleration", 0)
+		writeToFile("" + SmartDashboard.getNumber("Left Distance", 0) + " "
+					+ SmartDashboard.getNumber("Right Distance", 0) + " "
+					+ SmartDashboard.getNumber("Left Velocity", 0) + " "
+					+ SmartDashboard.getNumber("Right Velocity", 0) + " "
+					+ SmartDashboard.getNumber("Left Acceleration", 0) + " "
 					+ SmartDashboard.getNumber("Right Acceleration", 0));
 		sendData(); 
 	}
@@ -182,13 +184,14 @@ public class Robot extends IterativeRobot {
 		if(logOpen) {
 			System.out.println("Log file is already open");
 		}else {
-			try {
-				logOpen = false; 
+			try { 
 				logName = logOutputDir + "log_" + getDateTimeString() + ".csv";
 				FileWriter fStream = new FileWriter(logName, true);
 				logFile = new BufferedWriter(fStream);
 				logFile.write(data + "\n");
 				logFile.write(units + "\n");
+				logOpen = true;
+				System.out.println("File initalized");
 			}catch(Exception e) {
 				System.out.println("Error setting up" + e.getMessage());
 			}
@@ -227,7 +230,7 @@ public class Robot extends IterativeRobot {
 			try {
 				logFile.close();
 				logOpen = false; 
-				System.out.println("File close");
+				System.out.println("File closed");
 			}catch(Exception e) {
 				System.out.println("Error closing file" + e.getMessage());
 			}

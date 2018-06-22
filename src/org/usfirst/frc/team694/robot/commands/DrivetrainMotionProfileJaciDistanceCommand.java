@@ -71,7 +71,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        if((leftFollower.isFinished() && rightFollower.isFinished()) || isFinishing()) {
+        if(leftFollower.isFinished() && rightFollower.isFinished()) {
         	System.out.println("Path has finished");
         	return true; 
         }else {
@@ -81,20 +81,23 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
 
     // Called once after isFinished returns true
     protected void end() {
+    	profileProcessor.stop(); 
     	Robot.drivetrain.stop();
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	profileProcessor.stop();
     	Robot.drivetrain.stop();
     }
     
   //Checks if there are few points left and if the percent output is low
-  public boolean isFinishing() {
+  //TODO Try this if the notifier works 
+  /*public boolean isFinishing() {
 	  return (segmentNumber <= leftTraj.length() - 5 && segmentNumber <= rightTraj.length() - 5)
 			  && (Robot.drivetrain.leftBottomMotor.getMotorOutputPercent() <= 0.05 && Robot.drivetrain.rightBottomMotor.getMotorOutputPercent() <= 0.05);
-  }
+  }*/
   
   class RunProfile implements java.lang.Runnable {
 	@Override
