@@ -12,6 +12,6 @@ public class RightSideOppositeScale extends CommandGroup {
 
     public RightSideOppositeScale() {
     	//Use the robot
-    	addSequential(new DrivetrainMotionProfileJaciEncoderCommand("RightSideOppositeScale", Robot.dt, 12));
+    	addSequential(new DrivetrainMotionProfileJaciEncoderCommand("RightSideOppositeScale", Robot.dt, 17.5));
     }
 }
