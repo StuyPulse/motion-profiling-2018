@@ -45,16 +45,17 @@ public class Robot extends IterativeRobot {
 	public static double startTime;
 	
 	public static double dt; 
-	public static double lastLeftPosition, lastRightPosition; 
+	/*public static double lastLeftPosition, lastRightPosition; 
 	public static double currentLeftPosition, currentRightPosition;
 	public static double lastLeftVelocity, lastRightVelocity; 
-	public static double currentLeftVelocity, currentRightVelocity; 
+	public static double currentLeftVelocity, currentRightVelocity;*/ 
 	public Notifier dataUpdator; 
 	
 	public boolean logOpen; 
 	public String logOutputDir;
 	public String logName; 
-	public BufferedWriter logFile; 
+	public BufferedWriter logFile;
+	
 	@Override
 	public void robotInit() {
 		drivetrain = new Drivetrain();
@@ -67,19 +68,19 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("kp", 0);
 		SmartDashboard.putNumber("ki", 0);
 		SmartDashboard.putNumber("kd", 0);
-		SmartDashboard.putNumber("ka", 0); 
+		SmartDashboard.putNumber("ka", 0);
+		SmartDashboard.putNumber("kg", 0.08);
 		SmartDashboard.putNumber("Left Distance", 0);
 		SmartDashboard.putNumber("Right Distance", 0);
 		SmartDashboard.putNumber("Left Velocity", 0);
 		SmartDashboard.putNumber("Right Velocity", 0);
 		SmartDashboard.putNumber("Left Acceleration", 0);
 		SmartDashboard.putNumber("Right Acceleration", 0);
-		lastLeftPosition = 0; 
+		/*lastLeftPosition = 0; 
 		lastRightPosition = 0; 
 		lastLeftVelocity = 0; 
-		lastRightVelocity = 0;
+		lastRightVelocity = 0;*/
 		logOutputDir = "/home/lvuser/MotionProfileData/";
-		dataUpdator = new Notifier(new UpdateData());
 	}
 
 	/**
@@ -89,7 +90,7 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void disabledInit() {
-
+		
 	}
 
 	@Override
@@ -128,6 +129,7 @@ public class Robot extends IterativeRobot {
     	startTime = Timer.getFPGATimestamp();
     	initLog("LeftDistance RightDistance LeftVelocity RightVelocity LeftAcceleration RightAcceleration", 
     			"ft ft ft/sec ft/sec ft/sec/sec ft/sec/sec");
+		dataUpdator = new Notifier(new UpdateData());
     	dataUpdator.startPeriodic(dt);
 	}
 
@@ -247,9 +249,9 @@ public class Robot extends IterativeRobot {
 	class UpdateData implements java.lang.Runnable {
 		@Override
 		public void run() {
-			//Conversion to ft
-			currentLeftPosition = drivetrain.getLeftDistance() / 12;
-			currentRightPosition = drivetrain.getRightDistance() / 12;
+			/*//Conversion to ft
+			currentLeftPosition = drivetrain.getLeftDistance();
+			currentRightPosition = drivetrain.getRightDistance();
 			SmartDashboard.putNumber("Left Distance", currentLeftPosition);
 			SmartDashboard.putNumber("Right Distance", currentRightPosition);
 			//get the change in position per dt, then multiply by a factor to get per sec
@@ -259,14 +261,20 @@ public class Robot extends IterativeRobot {
 			SmartDashboard.putNumber("Right Velocity", currentRightVelocity);
 			//get the change in velocity per dt, then multiply by a factor to get per sec
 			SmartDashboard.putNumber("Left Acceleration", (currentLeftVelocity  - lastLeftVelocity) * (1 / dt));
-			SmartDashboard.putNumber("Right Acceleration", (currentRightVelocity  - lastRightVelocity) * (1 / dt));
+			SmartDashboard.putNumber("Right Acceleration", (currentRightVelocity  - lastRightVelocity) * (1 / dt));*/
+			SmartDashboard.putNumber("Left Distance", drivetrain.getLeftDistance()); 
+			SmartDashboard.putNumber("Right Distance", drivetrain.getRightDistance());
+			SmartDashboard.putNumber("Left Velocity", drivetrain.getSensorLeftVelocity());
+			SmartDashboard.putNumber("Right Velocity", drivetrain.getSensorRightVelocity());
+			SmartDashboard.putNumber("Left Acceleration", drivetrain.getSensorAcceleration());
+			SmartDashboard.putNumber("Right Acceleration", drivetrain.getSensorAcceleration());
 			//Log the data
 			logData(); 
 			//set the last values to the current ones for next run
-			lastLeftPosition = currentLeftPosition; 
+			/*lastLeftPosition = currentLeftPosition; 
 			lastRightPosition = currentRightPosition; 
 			lastLeftVelocity = currentLeftVelocity; 
-			lastRightVelocity = currentRightVelocity; 
+			lastRightVelocity = currentRightVelocity;*/ 
 		}
 	}
 }

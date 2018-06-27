@@ -81,40 +81,69 @@ public class Drivetrain extends Subsystem {
     	rightBottomMotor.setSelectedSensorPosition(0, 0, 100);
     }
     
+    //Everything in ft
     public double getLeftDistance(){
-    	return leftBottomMotor.getSelectedSensorPosition(0) * RobotMap.DRIVETRAIN_RAW_MULTIPLIER;
+    	return leftBottomMotor.getSelectedSensorPosition(0) * RobotMap.DRIVETRAIN_RAW_MULTIPLIER / 12;
     }
   
     public double getRightDistance(){
-    	return -1 * rightBottomMotor.getSelectedSensorPosition(0) * RobotMap.DRIVETRAIN_RAW_MULTIPLIER;
+    	return -1 * rightBottomMotor.getSelectedSensorPosition(0) * RobotMap.DRIVETRAIN_RAW_MULTIPLIER / 12;
     }
     
     public double getDistance(){
     	return Math.max(getLeftDistance(), getRightDistance());
     }
-    //The velocities and accelerations are continuous and not instantaneous
-    public double getLeftVelocity() {
+    //The velocities and accelerations are average
+    public double getAverageLeftVelocity() {
     	return (getLeftDistance() / (Timer.getFPGATimestamp() - Robot.startTime));
     }
     
-    public double getRightVelocity() {
+    public double getAverageRightVelocity() {
     	return (getRightDistance() / (Timer.getFPGATimestamp() - Robot.startTime));
     }
     
-    public double getVelocity() {
-    	return Math.max(getLeftVelocity(), getRightVelocity());
+    public double getAverageVelocity() {
+    	return Math.max(getAverageLeftVelocity(), getAverageRightVelocity());
     }
     
-    public double getLeftAcceleration() {
-    	return (getLeftVelocity() / (Timer.getFPGATimestamp() - Robot.startTime));
+    public double getAverageLeftAcceleration() {
+    	return (getAverageLeftVelocity() / (Timer.getFPGATimestamp() - Robot.startTime));
     }
     
-    public double getRightAcceleration() {
-    	return (getRightVelocity() / (Timer.getFPGATimestamp() - Robot.startTime));
+    public double getAverageRightAcceleration() {
+    	return (getAverageRightVelocity() / (Timer.getFPGATimestamp() - Robot.startTime));
     }
     
-    public double getAcceleration() {
-    	return Math.max(getLeftAcceleration(), getRightAcceleration());
+    public double getAverageAcceleration() {
+    	return Math.max(getAverageLeftAcceleration(), getAverageRightAcceleration());
+    }
+    
+    public double getSensorLeftVelocity() {
+    	//raw value in units / 100 ms
+    	return leftBottomMotor.getSelectedSensorVelocity(0) / 100 * 1000 * RobotMap.DRIVETRAIN_RAW_MULTIPLIER;
+    }
+    
+    public double getSensorRightVelocity() {
+    	//raw value in units / 100 ms
+    	return rightBottomMotor.getSelectedSensorVelocity(0) / 100 * 1000 * RobotMap.DRIVETRAIN_RAW_MULTIPLIER;
+    }
+    
+    public double getSensorVelocity() {
+    	return Math.max(getSensorLeftVelocity(), getSensorRightVelocity());
+    }
+    
+    //navx gives acceleration in g
+    //32.17 ft/sec in one g
+    public double getXAccel() {
+    	return navx.getWorldLinearAccelX() * 32.17; 
+    }
+    
+    public double getYAccel() {
+    	return navx.getWorldLinearAccelY() * 32.17; 
+    }
+    
+    public double getSensorAcceleration() {
+    	return Math.sqrt(Math.pow(getXAccel(), 2) + Math.pow(getYAccel(), 2));
     }
     
     public void tankDrive(double l, double r) {

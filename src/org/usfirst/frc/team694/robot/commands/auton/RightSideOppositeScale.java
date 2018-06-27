@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class RightSideOppositeScale extends CommandGroup {
 
     public RightSideOppositeScale() {
-    	//ka 0.014
+    	//Use the robot
     	addSequential(new DrivetrainMotionProfileJaciEncoderCommand("RightSideOppositeScale", Robot.dt, 12));
     }
 }

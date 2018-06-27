@@ -28,10 +28,10 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
 	
 	double dt; 
 	double maxVelocity;
+	double velocityIntercept; 
+
+	Notifier profileProcessor; 
 	
-	int segmentNumber;
-	
-	Notifier profileProcessor;  
     public DrivetrainMotionProfileJaciEncoderCommand(String nameOfPath, double dt, double maxVelocity) {
     	requires(Robot.drivetrain);
     	leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
@@ -51,7 +51,6 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     	rightTraj = path.modifier.getRightTrajectory();
     	maxVelocity = path.maxVelocity;
     	dt = path.dt;
-    	profileProcessor = new Notifier(new RunProfile());
     }
 
     // Called just before this Command runs the first time
@@ -65,7 +64,7 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
     	leftFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0), SmartDashboard.getNumber("kd", 0.0), 1 / maxVelocity, SmartDashboard.getNumber("ka", 0));
     	rightFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0), SmartDashboard.getNumber("kd", 0.0), 1 / maxVelocity, SmartDashboard.getNumber("ka", 0));
-    	segmentNumber = 0;
+    	profileProcessor = new Notifier(new RunProfile());
     	profileProcessor.startPeriodic(dt);
     }
 
@@ -97,14 +96,13 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     	Robot.drivetrain.stop();
     }
     
-    //Checks if there are few points left and if the percent output is low
-    //TODO Try this if the notifier works 
-    /*public boolean isFinishing() {
-    	return (segmentNumber <= leftTraj.length() - 5 && segmentNumber <= rightTraj.length() - 5)
-    			&& (Robot.drivetrain.leftBottomMotor.getMotorOutputPercent() <= 0.05 && Robot.drivetrain.rightBottomMotor.getMotorOutputPercent() <= 0.05);
-    }*/
+    //From Oblarg's whitepaper on robot drivetrain characterization
+    private double calculate(EncoderFollower follower, int encoderTicks) {
+    	return follower.calculate(encoderTicks) + velocityIntercept;
+    }
     
     class RunProfile implements java.lang.Runnable {
+    	int segmentNumber = 0; 
 		@Override
 		public void run() {
 			double leftOutput = leftFollower.calculate(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition());
@@ -113,9 +111,10 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
 	    	double desiredHeading = Pathfinder.r2d(leftFollower.getHeading());
 	    	//Pathfinder is counter-clockwise while gyro is clockwise so gyro heading is added
 	    	double angleDifference = Pathfinder.boundHalfDegrees(desiredHeading + gyroHeading);
-	    	double turn = 0.8 * (-1.0 / 80.0) * angleDifference;
+	    	//kg is the turn gain and is the p for the angle loop
+	    	double turn = SmartDashboard.getNumber("kg", 0.08) * (-1.0 / 80.0) * angleDifference;
 	    	Robot.drivetrain.tankDrive(leftOutput + turn, rightOutput - turn);
-	    	System.out.println("Left Power: " + (leftOutput + turn) + "Right Power: " + (rightOutput - turn));
+	    	System.out.println("Left Power: " + (leftOutput + turn) + " Right Power: " + (rightOutput - turn));
 	    	segmentNumber++; 
 		}
     }
