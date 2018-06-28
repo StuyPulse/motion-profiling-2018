@@ -25,22 +25,16 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
 	
 	Trajectory leftTraj; 
 	Trajectory rightTraj;
-	
-	double dt; 
-	double maxVelocity;
-	double velocityIntercept; 
 
 	Notifier profileProcessor; 
 	
-    public DrivetrainMotionProfileJaciEncoderCommand(String nameOfPath, double dt, double maxVelocity) {
+    public DrivetrainMotionProfileJaciEncoderCommand(String nameOfPath) {
     	requires(Robot.drivetrain);
     	leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
     	rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv");
     	leftTraj = Pathfinder.readFromCSV(leftCSV);
         rightTraj = Pathfinder.readFromCSV(rightCSV);
-        System.out.println("CSV has been locked and loaded");
-    	this.maxVelocity = maxVelocity; 
-    	this.dt = dt; 
+        System.out.println("CSV has been locked and loaded"); 
     	profileProcessor = new Notifier(new RunProfile());
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
@@ -49,8 +43,6 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     public DrivetrainMotionProfileJaciEncoderCommand(PathGenerator path) {
     	leftTraj = path.modifier.getLeftTrajectory(); 
     	rightTraj = path.modifier.getRightTrajectory();
-    	maxVelocity = path.maxVelocity;
-    	dt = path.dt;
     }
 
     // Called just before this Command runs the first time
@@ -62,10 +54,9 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     	//Wheel diameter in feet
     	leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
     	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
-    	leftFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0), SmartDashboard.getNumber("kd", 0.0), 1 / maxVelocity, SmartDashboard.getNumber("ka", 0));
-    	rightFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0), SmartDashboard.getNumber("kd", 0.0), 1 / maxVelocity, SmartDashboard.getNumber("ka", 0));
-    	profileProcessor = new Notifier(new RunProfile());
-    	profileProcessor.startPeriodic(dt);
+    	leftFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0), SmartDashboard.getNumber("kd", 0.0), RobotMap.kv, SmartDashboard.getNumber("ka", 0));
+    	rightFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0), SmartDashboard.getNumber("kd", 0.0), RobotMap.kv, SmartDashboard.getNumber("ka", 0));
+    	profileProcessor.startPeriodic(RobotMap.dt);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -98,7 +89,8 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     
     //From Oblarg's whitepaper on robot drivetrain characterization
     private double calculate(EncoderFollower follower, int encoderTicks) {
-    	return follower.calculate(encoderTicks) + velocityIntercept;
+    	//TODO Find the vIntercept
+    	return follower.calculate(encoderTicks) /*+ RobotMap.vIntercept*/;
     }
     
     class RunProfile implements java.lang.Runnable {
@@ -114,7 +106,7 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
 	    	//kg is the turn gain and is the p for the angle loop
 	    	double turn = SmartDashboard.getNumber("kg", 0.08) * (-1.0 / 80.0) * angleDifference;
 	    	Robot.drivetrain.tankDrive(leftOutput + turn, rightOutput - turn);
-	    	System.out.println("Left Power: " + (leftOutput + turn) + " Right Power: " + (rightOutput - turn));
+	    	System.out.println(segmentNumber + "-Left Power: " + (leftOutput + turn) + " Right Power: " + (rightOutput - turn));
 	    	segmentNumber++; 
 		}
     }

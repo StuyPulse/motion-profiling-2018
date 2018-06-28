@@ -43,8 +43,7 @@ public class Robot extends IterativeRobot {
 	 * used for any initialization code.
 	 */
 	public static double startTime;
-	
-	public static double dt; 
+ 
 	/*public static double lastLeftPosition, lastRightPosition; 
 	public static double currentLeftPosition, currentRightPosition;
 	public static double lastLeftVelocity, lastRightVelocity; 
@@ -63,8 +62,6 @@ public class Robot extends IterativeRobot {
 		m_chooser.addDefault("Default Auto", new CommandGroup());
 		m_chooser.addObject("Right Side Opposite Scale", new RightSideOppositeScale());
 		SmartDashboard.putData("Auto mode", m_chooser);
-		//Make dt 0.05 sec by default
-		dt = 0.05; 
 		SmartDashboard.putNumber("kp", 0);
 		SmartDashboard.putNumber("ki", 0);
 		SmartDashboard.putNumber("kd", 0);
@@ -130,7 +127,7 @@ public class Robot extends IterativeRobot {
     	initLog("LeftDistance RightDistance LeftVelocity RightVelocity LeftAcceleration RightAcceleration", 
     			"ft ft ft/sec ft/sec ft/sec/sec ft/sec/sec");
 		dataUpdator = new Notifier(new UpdateData());
-    	dataUpdator.startPeriodic(dt);
+    	dataUpdator.startPeriodic(RobotMap.dt);
 	}
 
 	/**

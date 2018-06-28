@@ -120,12 +120,12 @@ public class Drivetrain extends Subsystem {
     
     public double getSensorLeftVelocity() {
     	//raw value in units / 100 ms
-    	return leftBottomMotor.getSelectedSensorVelocity(0) / 100 * 1000 * RobotMap.DRIVETRAIN_RAW_MULTIPLIER;
+    	return leftBottomMotor.getSelectedSensorVelocity(0) / 100 * 1000 * RobotMap.DRIVETRAIN_RAW_MULTIPLIER / 12;
     }
     
     public double getSensorRightVelocity() {
     	//raw value in units / 100 ms
-    	return rightBottomMotor.getSelectedSensorVelocity(0) / 100 * 1000 * RobotMap.DRIVETRAIN_RAW_MULTIPLIER;
+    	return rightBottomMotor.getSelectedSensorVelocity(0) / 100 * 1000 * RobotMap.DRIVETRAIN_RAW_MULTIPLIER / 12;
     }
     
     public double getSensorVelocity() {
@@ -133,7 +133,7 @@ public class Drivetrain extends Subsystem {
     }
     
     //navx gives acceleration in g
-    //32.17 ft/sec in one g
+    //32.17 ft/sec^2 in one g
     public double getXAccel() {
     	return navx.getWorldLinearAccelX() * 32.17; 
     }
