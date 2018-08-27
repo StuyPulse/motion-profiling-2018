@@ -53,6 +53,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     	rightFollower.reset();
     	leftFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0.0), SmartDashboard.getNumber("kd", 0.0), RobotMap.kv, SmartDashboard.getNumber("ka", 0));
     	rightFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0.0), SmartDashboard.getNumber("kd", 0.0), RobotMap.kv, SmartDashboard.getNumber("ka", 0));
+    	RobotMap.dt = leftFollower.getSegment().dt; 
     	profileProcessor.startPeriodic(RobotMap.dt);
     }
 
