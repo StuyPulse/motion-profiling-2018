@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.usfirst.frc.team694.robot.Robot;
 import org.usfirst.frc.team694.robot.RobotMap;
+import org.usfirst.frc.team694.util.FindPath;
 import org.usfirst.frc.team694.util.PathGenerator;
 
 import edu.wpi.first.wpilibj.Notifier;
@@ -30,8 +31,11 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
 	
     public DrivetrainMotionProfileJaciEncoderCommand(String nameOfPath) {
     	requires(Robot.drivetrain);
-    	leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
-    	rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv");
+    	FindPath findPath = new FindPath(nameOfPath); 
+    	//leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
+    	//rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv");
+    	leftCSV = findPath.leftCSV; 
+    	rightCSV = findPath.rightCSV; 
     	leftTraj = Pathfinder.readFromCSV(leftCSV);
         rightTraj = Pathfinder.readFromCSV(rightCSV);
         System.out.println("CSV has been locked and loaded"); 
