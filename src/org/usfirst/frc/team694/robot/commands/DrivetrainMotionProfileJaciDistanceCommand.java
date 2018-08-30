@@ -4,8 +4,8 @@ import java.io.File;
 
 import org.usfirst.frc.team694.robot.Robot;
 import org.usfirst.frc.team694.robot.RobotMap;
-import org.usfirst.frc.team694.util.FindPath;
 import org.usfirst.frc.team694.util.PathGenerator;
+import org.usfirst.frc.team694.util.profiles.FindPath;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.command.Command;
