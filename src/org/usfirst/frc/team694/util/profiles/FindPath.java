@@ -15,9 +15,9 @@ public class FindPath {
 		rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv");
 		
 		try {
-			InputStream leftStream = getClass().getResourceAsStream("/" + nameOfPath + "_left_Jaci.csv");
+			InputStream leftStream = getClass().getResourceAsStream("/org.usfirst.frc.team694.util.profiles/" + nameOfPath + "_left_Jaci.csv");
 			streamToFile(leftStream, leftCSV); 
-			InputStream rightStream = getClass().getResourceAsStream("/" + nameOfPath + "_right_Jaci.csv");
+			InputStream rightStream = getClass().getResourceAsStream("/org.usfirst.frc.team694.util.profiles/" + nameOfPath + "_right_Jaci.csv");
 			streamToFile(rightStream, rightCSV); 
 		}catch(Exception e) {
 			e.printStackTrace();
