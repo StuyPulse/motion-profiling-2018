@@ -29,6 +29,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
 	Notifier profileProcessor;
 	
     public DrivetrainMotionProfileJaciDistanceCommand(String nameOfPath) {
+    	requires(Robot.drivetrain);
     	leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
     	rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv"); 
     	leftTraj = Pathfinder.readFromCSV(leftCSV);
@@ -40,6 +41,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     }
     
     public DrivetrainMotionProfileJaciDistanceCommand(PathGenerator path) {
+    	requires(Robot.drivetrain);
     	leftTraj = path.modifier.getLeftTrajectory();
     	rightTraj = path.modifier.getRightTrajectory();
     	profileProcessor = new Notifier(new RunProfile());

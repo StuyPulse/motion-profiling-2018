@@ -41,6 +41,7 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     }
 
     public DrivetrainMotionProfileJaciEncoderCommand(PathGenerator path) {
+    	requires(Robot.drivetrain);
     	leftTraj = path.modifier.getLeftTrajectory(); 
     	rightTraj = path.modifier.getRightTrajectory();
     }
