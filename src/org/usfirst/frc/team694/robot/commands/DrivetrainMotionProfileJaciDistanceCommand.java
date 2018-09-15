@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.usfirst.frc.team694.robot.Robot;
 import org.usfirst.frc.team694.robot.RobotMap;
-import org.usfirst.frc.team694.util.PathGenerator;
 
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.command.Command;
@@ -27,8 +26,9 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
 	File rightCSV; 
 	
 	Notifier profileProcessor;
+	double dt; 
 	
-    public DrivetrainMotionProfileJaciDistanceCommand(String nameOfPath) {
+    public DrivetrainMotionProfileJaciDistanceCommand(String nameOfPath, double dt) {
     	requires(Robot.drivetrain);
     	leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
     	rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv"); 
@@ -39,14 +39,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
-    
-    public DrivetrainMotionProfileJaciDistanceCommand(PathGenerator path) {
-    	requires(Robot.drivetrain);
-    	leftTraj = path.modifier.getLeftTrajectory();
-    	rightTraj = path.modifier.getRightTrajectory();
-    	profileProcessor = new Notifier(new RunProfile());
-    }
-
+ 
     // Called just before this Command runs the first time
     protected void initialize() {
     	leftFollower = new DistanceFollower(leftTraj);
@@ -55,7 +48,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     	rightFollower.reset();
     	leftFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0.0), SmartDashboard.getNumber("kd", 0.0), RobotMap.kv, SmartDashboard.getNumber("ka", 0));
     	rightFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0.0), SmartDashboard.getNumber("kd", 0.0), RobotMap.kv, SmartDashboard.getNumber("ka", 0));
-    	profileProcessor.startPeriodic(RobotMap.dt);
+    	profileProcessor.startPeriodic(dt);
     }
 
     // Called repeatedly when this Command is scheduled to run

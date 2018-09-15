@@ -125,7 +125,7 @@ public class Robot extends IterativeRobot {
     	initLog("LeftDistance,RightDistance,LeftVelocity,RightVelocity,LeftAcceleration,RightAcceleration", 
     			"ft,ft,ft/sec,ft/sec,ft/sec/sec,ft/sec/sec");
 		dataUpdator = new Notifier(new UpdateData());
-    	dataUpdator.startPeriodic(RobotMap.dt);
+    	dataUpdator.startPeriodic(0.05);
 	}
 
 	/**
