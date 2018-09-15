@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.usfirst.frc.team694.robot.commands.auton.RightSideOppositeScale;
 import org.usfirst.frc.team694.robot.subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -60,7 +59,6 @@ public class Robot extends IterativeRobot {
 		drivetrain = new Drivetrain();
 		m_oi = new OI();
 		m_chooser.addDefault("Default Auto", new CommandGroup());
-		m_chooser.addObject("Right Side Opposite Scale", new RightSideOppositeScale());
 		SmartDashboard.putData("Auto mode", m_chooser);
 		SmartDashboard.putNumber("kp", 0);
 		SmartDashboard.putNumber("ki", 0);
@@ -124,8 +122,8 @@ public class Robot extends IterativeRobot {
 		Robot.drivetrain.resetEncoders(); 
     	Robot.drivetrain.resetGyro();
     	startTime = Timer.getFPGATimestamp();
-    	initLog("LeftDistance RightDistance LeftVelocity RightVelocity LeftAcceleration RightAcceleration", 
-    			"ft ft ft/sec ft/sec ft/sec/sec ft/sec/sec");
+    	initLog("LeftDistance,RightDistance,LeftVelocity,RightVelocity,LeftAcceleration,RightAcceleration", 
+    			"ft,ft,ft/sec,ft/sec,ft/sec/sec,ft/sec/sec");
 		dataUpdator = new Notifier(new UpdateData());
     	dataUpdator.startPeriodic(RobotMap.dt);
 	}
@@ -170,11 +168,11 @@ public class Robot extends IterativeRobot {
 	}
 	
 	public void logData() {
-		writeToFile("" + SmartDashboard.getNumber("Left Distance", 0) + " "
-					+ SmartDashboard.getNumber("Right Distance", 0) + " "
-					+ SmartDashboard.getNumber("Left Velocity", 0) + " "
-					+ SmartDashboard.getNumber("Right Velocity", 0) + " "
-					+ SmartDashboard.getNumber("Left Acceleration", 0) + " "
+		writeToFile("" + SmartDashboard.getNumber("Left Distance", 0) + ","
+					+ SmartDashboard.getNumber("Right Distance", 0) + ","
+					+ SmartDashboard.getNumber("Left Velocity", 0) + ","
+					+ SmartDashboard.getNumber("Right Velocity", 0) + ","
+					+ SmartDashboard.getNumber("Left Acceleration", 0) + ","
 					+ SmartDashboard.getNumber("Right Acceleration", 0));
 		sendData(); 
 	}
