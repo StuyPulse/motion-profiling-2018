@@ -41,19 +41,7 @@ public class Robot extends IterativeRobot {
 	 * This function is run when the robot is first started up and should be
 	 * used for any initialization code.
 	 */
-	public static double startTime;
- 
-	/*public static double lastLeftPosition, lastRightPosition; 
-	public static double currentLeftPosition, currentRightPosition;
-	public static double lastLeftVelocity, lastRightVelocity; 
-	public static double currentLeftVelocity, currentRightVelocity;*/ 
-	public Notifier dataUpdator; 
-	
-	public boolean logOpen; 
-	public String logOutputDir;
-	public String logName; 
-	public BufferedWriter logFile;
-	
+
 	@Override
 	public void robotInit() {
 		drivetrain = new Drivetrain();
@@ -65,17 +53,6 @@ public class Robot extends IterativeRobot {
 		SmartDashboard.putNumber("kd", 0);
 		SmartDashboard.putNumber("ka", 0);
 		SmartDashboard.putNumber("kg", 0.08);
-		SmartDashboard.putNumber("Left Distance", 0);
-		SmartDashboard.putNumber("Right Distance", 0);
-		SmartDashboard.putNumber("Left Velocity", 0);
-		SmartDashboard.putNumber("Right Velocity", 0);
-		SmartDashboard.putNumber("Left Acceleration", 0);
-		SmartDashboard.putNumber("Right Acceleration", 0);
-		/*lastLeftPosition = 0; 
-		lastRightPosition = 0; 
-		lastLeftVelocity = 0; 
-		lastRightVelocity = 0;*/
-		logOutputDir = "/home/lvuser/MotionProfileData/";
 	}
 
 	/**
@@ -121,11 +98,6 @@ public class Robot extends IterativeRobot {
 		}
 		Robot.drivetrain.resetEncoders(); 
     	Robot.drivetrain.resetGyro();
-    	startTime = Timer.getFPGATimestamp();
-    	initLog("LeftDistance,RightDistance,LeftVelocity,RightVelocity,LeftAcceleration,RightAcceleration", 
-    			"ft,ft,ft/sec,ft/sec,ft/sec/sec,ft/sec/sec");
-		dataUpdator = new Notifier(new UpdateData());
-    	dataUpdator.startPeriodic(0.05);
 	}
 
 	/**
@@ -134,11 +106,6 @@ public class Robot extends IterativeRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-		//Data logged in data updator
-		if(m_autonomousCommand.isCompleted()) {
-			dataUpdator.stop();
-			closeFile(); 
-		}
 	}
 
 	@Override
@@ -165,111 +132,5 @@ public class Robot extends IterativeRobot {
 	 */
 	@Override
 	public void testPeriodic() {
-	}
-	
-	public void logData() {
-		writeToFile("" + SmartDashboard.getNumber("Left Distance", 0) + ","
-					+ SmartDashboard.getNumber("Right Distance", 0) + ","
-					+ SmartDashboard.getNumber("Left Velocity", 0) + ","
-					+ SmartDashboard.getNumber("Right Velocity", 0) + ","
-					+ SmartDashboard.getNumber("Left Acceleration", 0) + ","
-					+ SmartDashboard.getNumber("Right Acceleration", 0));
-		sendData(); 
-	}
-	
-	public void initLog(String data, String units) {
-		if(logOpen) {
-			System.out.println("Log file is already open");
-		}else {
-			try { 
-				logName = logOutputDir + "log_" + getDateTimeString() + ".csv";
-				FileWriter fStream = new FileWriter(logName, true);
-				logFile = new BufferedWriter(fStream);
-				logFile.write(data + "\n");
-				logFile.write(units + "\n");
-				logOpen = true;
-				System.out.println("File initalized");
-			}catch(Exception e) {
-				System.out.println("Error setting up" + e.getMessage());
-			}
-		}
-	}
-	
-	public void writeToFile(String text) {
-		if(!logOpen) {
-			System.out.println("Log file closed cannot write");
-		}else {
-			try {
-				logFile.write(text + "\n");
-			}catch(Exception e) {
-				System.out.println("Error writing to file" + e.getMessage());
-			}
-		}
-	}
-	
-	public void sendData() {
-		if(!logOpen) {
-			System.out.println("Log not open, cannot send");
-		}else {
-			try {
-				logFile.flush();
-			}catch(Exception e) {
-				System.out.println("Cannot send data" + e.getMessage());
-			}
-		}
-	}
-	
-	public void closeFile() {
-		if(!logOpen) {
-			System.out.println("File already closed");
-		}else {
-			sendData();
-			try {
-				logFile.close();
-				logOpen = false; 
-				System.out.println("File closed");
-			}catch(Exception e) {
-				System.out.println("Error closing file" + e.getMessage());
-			}
-		}
-	}
-	
-	public String getDateTimeString() {
-		DateFormat dt = new SimpleDateFormat("MM-dd-yyyy_hh:mm:ss");
-		dt.setTimeZone(TimeZone.getDefault());
-		return dt.format(new Date());
-	}
-	
-	//Calculates the position, velocity, and acceleration at that point
-	class UpdateData implements java.lang.Runnable {
-		@Override
-		public void run() {
-			/*//Conversion to ft
-			currentLeftPosition = drivetrain.getLeftDistance();
-			currentRightPosition = drivetrain.getRightDistance();
-			SmartDashboard.putNumber("Left Distance", currentLeftPosition);
-			SmartDashboard.putNumber("Right Distance", currentRightPosition);
-			//get the change in position per dt, then multiply by a factor to get per sec
-			currentLeftVelocity = (currentLeftPosition - lastLeftPosition) * (1 / dt);
-			currentRightVelocity = (currentRightPosition - lastRightPosition) * (1 / dt);
-			SmartDashboard.putNumber("Left Velocity", currentLeftVelocity);
-			SmartDashboard.putNumber("Right Velocity", currentRightVelocity);
-			//get the change in velocity per dt, then multiply by a factor to get per sec
-			SmartDashboard.putNumber("Left Acceleration", (currentLeftVelocity  - lastLeftVelocity) * (1 / dt));
-			SmartDashboard.putNumber("Right Acceleration", (currentRightVelocity  - lastRightVelocity) * (1 / dt));*/
-			SmartDashboard.putNumber("Left Distance", drivetrain.getLeftDistance()); 
-			SmartDashboard.putNumber("Right Distance", drivetrain.getRightDistance());
-			SmartDashboard.putNumber("Left Velocity", drivetrain.getSensorLeftVelocity());
-			SmartDashboard.putNumber("Right Velocity", drivetrain.getSensorRightVelocity());
-			SmartDashboard.putNumber("Left Acceleration", drivetrain.getSensorAcceleration());
-			SmartDashboard.putNumber("Right Acceleration", drivetrain.getSensorAcceleration());
-			//Log the data
-			logData(); 
-			//set the last values to the current ones for next run
-			/*lastLeftPosition = currentLeftPosition; 
-			lastRightPosition = currentRightPosition; 
-			lastLeftVelocity = currentLeftVelocity; 
-			lastRightVelocity = currentRightVelocity;*/ 
-		}
 	}
 }

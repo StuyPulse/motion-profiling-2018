@@ -1,6 +1,5 @@
 package org.usfirst.frc.team694.robot.subsystems;
 
-import org.usfirst.frc.team694.robot.Robot;
 import org.usfirst.frc.team694.robot.RobotMap;
 
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -10,7 +9,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 
 /**
@@ -93,59 +91,7 @@ public class Drivetrain extends Subsystem {
     public double getDistance(){
     	return Math.max(getLeftDistance(), getRightDistance());
     }
-    //The velocities and accelerations are average
-    public double getAverageLeftVelocity() {
-    	return (getLeftDistance() / (Timer.getFPGATimestamp() - Robot.startTime));
-    }
-    
-    public double getAverageRightVelocity() {
-    	return (getRightDistance() / (Timer.getFPGATimestamp() - Robot.startTime));
-    }
-    
-    public double getAverageVelocity() {
-    	return Math.max(getAverageLeftVelocity(), getAverageRightVelocity());
-    }
-    
-    public double getAverageLeftAcceleration() {
-    	return (getAverageLeftVelocity() / (Timer.getFPGATimestamp() - Robot.startTime));
-    }
-    
-    public double getAverageRightAcceleration() {
-    	return (getAverageRightVelocity() / (Timer.getFPGATimestamp() - Robot.startTime));
-    }
-    
-    public double getAverageAcceleration() {
-    	return Math.max(getAverageLeftAcceleration(), getAverageRightAcceleration());
-    }
-    
-    public double getSensorLeftVelocity() {
-    	//raw value in units / 100 ms
-    	return leftBottomMotor.getSelectedSensorVelocity(0) / 100 * 1000 * RobotMap.DRIVETRAIN_RAW_MULTIPLIER / 12;
-    }
-    
-    public double getSensorRightVelocity() {
-    	//raw value in units / 100 ms
-    	return rightBottomMotor.getSelectedSensorVelocity(0) / 100 * 1000 * RobotMap.DRIVETRAIN_RAW_MULTIPLIER / 12;
-    }
-    
-    public double getSensorVelocity() {
-    	return Math.max(getSensorLeftVelocity(), getSensorRightVelocity());
-    }
-    
-    //navx gives acceleration in g
-    //32.17 ft/sec^2 in one g
-    public double getXAccel() {
-    	return navx.getWorldLinearAccelX() * 32.17; 
-    }
-    
-    public double getYAccel() {
-    	return navx.getWorldLinearAccelY() * 32.17; 
-    }
-    
-    public double getSensorAcceleration() {
-    	return Math.sqrt(Math.pow(getXAccel(), 2) + Math.pow(getYAccel(), 2));
-    }
-    
+        
     public void tankDrive(double l, double r) {
     	leftBottomMotor.set(l);
     	rightBottomMotor.set(r);
