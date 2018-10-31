@@ -43,7 +43,7 @@ public class Drivetrain extends Subsystem {
     	rightMiddleMotor = new WPI_VictorSPX(RIGHT_MIDDLE_MOTOR_PORT);
     	leftBottomMotor = new WPI_TalonSRX(LEFT_BOTTOM_MOTOR_PORT);
     	rightBottomMotor = new WPI_TalonSRX(RIGHT_BOTTOM_MOTOR_PORT);
-    
+
     	leftTopMotor.follow(leftBottomMotor);
     	leftMiddleMotor.follow(leftBottomMotor);
     	rightTopMotor.follow(rightBottomMotor);

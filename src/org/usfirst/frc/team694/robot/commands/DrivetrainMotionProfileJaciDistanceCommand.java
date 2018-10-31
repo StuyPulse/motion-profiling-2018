@@ -28,7 +28,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
 	Notifier profileProcessor;
 	double dt; 
 	
-    public DrivetrainMotionProfileJaciDistanceCommand(String nameOfPath, double dt) {
+    public DrivetrainMotionProfileJaciDistanceCommand(String nameOfPath) {
     	requires(Robot.drivetrain);
     	leftCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_left_Jaci.csv");
     	rightCSV = new File("/home/lvuser/Paths/" + nameOfPath + "_right_Jaci.csv"); 
@@ -36,6 +36,7 @@ public class DrivetrainMotionProfileJaciDistanceCommand extends Command {
     	rightTraj = Pathfinder.readFromCSV(rightCSV);
     	System.out.println("CSV has been locked and loaded");
     	profileProcessor = new Notifier(new RunProfile());
+    	this.dt = leftTraj.get(0).dt;
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     }
