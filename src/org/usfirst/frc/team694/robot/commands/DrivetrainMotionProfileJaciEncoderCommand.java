@@ -48,8 +48,8 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     	leftFollower.reset();
     	rightFollower.reset();
     	//Wheel diameter in feet
-    	leftFollower.configureEncoder(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
-    	rightFollower.configureEncoder(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	leftFollower.configureEncoder(Robot.drivetrain.getLeftEncoderTicks(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
+    	rightFollower.configureEncoder(Robot.drivetrain.getRightEncoderTicks(), RobotMap.DRIVETRAIN_ENCODER_TICKS_PER_REVOLUTION, RobotMap.DRIVETRAIN_WHEEL_DIAMETER / 12);
     	leftFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0), SmartDashboard.getNumber("kd", 0.0), RobotMap.kv, SmartDashboard.getNumber("ka", 0));
     	rightFollower.configurePIDVA(SmartDashboard.getNumber("kp", 0.0), SmartDashboard.getNumber("ki", 0), SmartDashboard.getNumber("kd", 0.0), RobotMap.kv, SmartDashboard.getNumber("ka", 0));
     	profileProcessor.startPeriodic(dt);
@@ -87,8 +87,8 @@ public class DrivetrainMotionProfileJaciEncoderCommand extends Command {
     	int segmentNumber = 0; 
 		@Override
 		public void run() {
-			double leftOutput = leftFollower.calculate(Robot.drivetrain.leftBottomMotor.getSensorCollection().getQuadraturePosition());
-	    	double rightOutput = rightFollower.calculate(Robot.drivetrain.rightBottomMotor.getSensorCollection().getQuadraturePosition());
+			double leftOutput = leftFollower.calculate(Robot.drivetrain.getLeftEncoderTicks());
+	    	double rightOutput = rightFollower.calculate(Robot.drivetrain.getRightEncoderTicks());
 	    	double gyroHeading = Robot.drivetrain.getGyroAngle();
 	    	double desiredHeading = Pathfinder.r2d(leftFollower.getHeading());
 	    	//Pathfinder is counter-clockwise while gyro is clockwise so gyro heading is added

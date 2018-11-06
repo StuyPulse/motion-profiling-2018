@@ -15,12 +15,12 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  *
  */
 public class Drivetrain extends Subsystem {
-	public WPI_VictorSPX leftTopMotor; 
-	public WPI_VictorSPX rightTopMotor;
-	public WPI_VictorSPX leftMiddleMotor; 
-	public WPI_VictorSPX rightMiddleMotor; 
-	public WPI_TalonSRX leftBottomMotor; 
-	public WPI_TalonSRX rightBottomMotor; 
+	private WPI_VictorSPX leftTopMotor; 
+	private WPI_VictorSPX rightTopMotor;
+	private WPI_VictorSPX leftMiddleMotor; 
+	private WPI_VictorSPX rightMiddleMotor; 
+	private WPI_TalonSRX leftBottomMotor; 
+	private WPI_TalonSRX rightBottomMotor; 
 	
 	private final int LEFT_TOP_MOTOR_PORT = 3;
 	private final int LEFT_MIDDLE_MOTOR_PORT = 2; 
@@ -53,6 +53,10 @@ public class Drivetrain extends Subsystem {
     	leftMiddleMotor.setInverted(true);
     	leftBottomMotor.setInverted(true);
     	
+    	rightTopMotor.setInverted(true);
+    	rightMiddleMotor.setInverted(true);
+    	rightBottomMotor.setInverted(true);
+    	
     	leftTopMotor.setNeutralMode(NeutralMode.Brake);
         leftMiddleMotor.setNeutralMode(NeutralMode.Brake);
         leftBottomMotor.setNeutralMode(NeutralMode.Brake);
@@ -77,6 +81,14 @@ public class Drivetrain extends Subsystem {
     public void resetEncoders() {
     	leftBottomMotor.setSelectedSensorPosition(0, 0, 100);
     	rightBottomMotor.setSelectedSensorPosition(0, 0, 100);
+    }
+    
+    public int getLeftEncoderTicks() {
+    	return leftBottomMotor.getSensorCollection().getQuadraturePosition(); 
+    }
+    
+    public int getRightEncoderTicks() {
+    	return rightBottomMotor.getSensorCollection().getQuadraturePosition(); 
     }
     
     //Everything in ft
